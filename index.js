@@ -5,10 +5,12 @@ dotenv.config();
 
 const client = new Discord.Client();
 
+const command = process.env.DISCORD_PREFIX || 'say';
+
 client.on('message', async (message) => {
   if (!message.guild) return;
 
-  if (message.content.startsWith('/say ')) {
+  if (message.content.startsWith(`/${command} `)) {
     if (message.member.voice.channel) {
       const connection = await message.member.voice.channel.join();
 
