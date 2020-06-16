@@ -5,8 +5,6 @@ dotenv.config();
 
 const client = new Discord.Client();
 
-client.login(process.env.DISCORD_TOKEN);
-
 client.on('message', async (message) => {
   if (!message.guild) return;
 
@@ -14,21 +12,19 @@ client.on('message', async (message) => {
     if (message.member.voice.channel) {
       const connection = await message.member.voice.channel.join();
 
-      const toSay = message.content.substr(5);
+      const parts = message.content.split(' ');
 
-      say.export(toSay, 'Fiona', 1, 'output.wav', (err) => {
+      say.export(parts.splice(2).join(' '), parts[1], 1, 'say.wav', (err) => {
         if (err) {
-          return console.error(err);
+          return message.reply(err.message);
         }
 
-        const dispatcher = connection.play('./output.wav');
-
-        dispatcher.on('finish', () => {
-          console.log('Finished playing!');
-        });
+        connection.play('./say.wav');
       });
     } else {
       message.reply('You need to join a voice channel first!');
     }
   }
 });
+
+client.login(process.env.DISCORD_TOKEN);
